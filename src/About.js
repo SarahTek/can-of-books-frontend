@@ -3,8 +3,8 @@ import { Component } from "react";
 class Profile extends Component {
 
   render() {
-    /* TODO: render information about the developers */
-    return <p>Profile page coming soon</p>
+    /* DONE: render information about the developers */
+    return <p>This app is made by Sarah Teklemariam</p>
   }
 };
 
