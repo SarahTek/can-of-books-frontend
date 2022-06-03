@@ -4,7 +4,7 @@ class Profile extends Component {
 
   render() {
     /* DONE: render information about the developers */
-    return <p>This app is made by Sarah Teklemariam</p>
+    return <p>This app is made by Sarah and Tanesha</p>
   }
 };
 
