@@ -1,4 +1,4 @@
-# Start your own "Can of Books" App
+# "Can of Books" App
 
 This repository has starter code to begin work on creating your own online bookshelf.
 
@@ -10,16 +10,9 @@ Books are life-changing. They have the power to enlighten, educate, entertain, h
 
 Clone this repo to your own account with the green "Use this template" button. Then, add any collaborators. Now you are ready to start adding features! Deploy your site to let the world know which books have had the greatest impact on you, and what's recommended. Enjoy!
 
+# Can Of books
 
-
-
-
-
-
-
-# Project Name
-
-**Author**: Team Member Names Goes Here
+**Author**: Sarah and Tanesha
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
 
 ## Overview
@@ -40,15 +33,14 @@ Clone this repo to your own account with the green "Use this template" button. T
 <!-- See below -->
 
 ## Credit and Collaborations
-<!-- Give credit (and a link) to other people or resources that helped you build this application. -->
+I want to thank my instructor Hexx and the TA's for helping us when we were stuck to make this App.
 
 
-Name of feature: ________________________________
+## Name of feature: Can of Books
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 2 hours
+Start time: 6:30
 
-Start time: _____
+Finish time: 9:00
 
-Finish time: _____
-
-Actual time needed to complete: _____
+Actual time needed to complete: 2 and half hours
