@@ -3,22 +3,25 @@ import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image';
 import bookImg from './book.jpeg'
 import axios from 'axios';
+import Button from 'react-bootstrap/Button';
+import BookFormModal from './BookFormModal';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      showForm: false
     }
   }
 
- /* DONE: Make a GET request to your API to fetch all the books from the database  */
+  /* DONE: Make a GET request to your API to fetch all the books from the database  */
   componentDidMount = async () => {
     try {
       const config = {
         method: 'get',
         baseURL: process.env.REACT_APP_SERVER,
-        url: './books'
+        url: '/books'
       }
       const response = await axios(config);
       this.setState({
@@ -31,11 +34,45 @@ class BestBooks extends React.Component {
       })
     }
   }
+
+  createBook= async(newBook) => {
+    try {
+      const config = {
+        method: 'post',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: '/books/',
+        data: newBook
+      }
+      const response = await axios(config);
+      const newBooksArray = [...this.state.books, response.data]
+      this.setState({
+        books: newBooksArray
+      })
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+      })
+    }
+  }
+
+  closeBookFormModal = () => this.setState({showForm: false});
+
   render() {
     /* DONE: render all the books in a Carousel */
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
+
+        <Button onClick={() => this.setState({showForm: true})}>Add a Book</Button>
+
+        {/* conditional rendering */}
+        {this.state.showForm && 
+          <BookFormModal 
+            showForm={this.state.showForm}
+            closeBookFormModal={this.closeBookFormModal}
+            createBook={this.createBook}
+        />}
 
         {this.state.books.length ? (
           <Carousel>
