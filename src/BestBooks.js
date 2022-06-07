@@ -35,7 +35,7 @@ class BestBooks extends React.Component {
     }
   }
 
-  createBook= async(newBook) => {
+  createBook = async (newBook) => {
     try {
       const config = {
         method: 'post',
@@ -56,7 +56,34 @@ class BestBooks extends React.Component {
     }
   }
 
-  closeBookFormModal = () => this.setState({showForm: false});
+  deleteBook = async (bookToBeDeleted) => {
+    try {
+      const proceed = window.confirm(`do you want to delete ${bookToBeDeleted.title}?`);
+      
+      let newBooks = this.state.books.filter(book => book._id !== bookToBeDeleted._id);
+      this.setState({
+        books: newBooks,
+        errorMessage: ''
+      });
+
+      if (proceed) {
+        const config = {
+          method: 'delete',
+          baseURL: process.env.REACT_APP_SERVER,
+          url: `/books/${bookToBeDeleted._id}`,
+        };
+        await axios(config);
+      }
+    } catch (error) {
+      console.error('Error in BestBooks deleteBook:', error);
+      this.setState({
+        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+      })
+    }
+  }
+
+
+  closeBookFormModal = () => this.setState({ showForm: false });
 
   render() {
     /* DONE: render all the books in a Carousel */
@@ -64,15 +91,15 @@ class BestBooks extends React.Component {
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
-        <Button onClick={() => this.setState({showForm: true})}>Add a Book</Button>
+        <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
 
         {/* conditional rendering */}
-        {this.state.showForm && 
-          <BookFormModal 
+        {this.state.showForm &&
+          <BookFormModal
             showForm={this.state.showForm}
             closeBookFormModal={this.closeBookFormModal}
             createBook={this.createBook}
-        />}
+          />}
 
         {this.state.books.length ? (
           <Carousel>
@@ -87,6 +114,7 @@ class BestBooks extends React.Component {
                   <h2 className="carousel-text">{book.title}</h2>
                   <p className="carousel-text">{book.description}</p>
                   <p className="carousel-text">Status: {book.status}</p>
+                  <Button onClick={() => this.deleteBook(book)}>Delete</Button>
                 </Carousel.Caption>
               </Carousel.Item>
             ))}
