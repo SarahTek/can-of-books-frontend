@@ -11,7 +11,8 @@ class BestBooks extends React.Component {
     super(props);
     this.state = {
       books: [],
-      showForm: false
+      showForm: false,
+      bookToBeUpdated: null
     }
   }
 
@@ -82,8 +83,43 @@ class BestBooks extends React.Component {
     }
   }
 
+  updateBook = async (updatedBook) => {
+    try {
+       const config = {
+          method: 'put',
+          baseURL: process.env.REACT_APP_SERVER,
+          url: `/books/${updatedBook._id}`,
+          data: updatedBook
+        };
 
+       const updatedBookResult = await axios(config);
+       console.log(updatedBookResult.data);
+      
+
+      let updatedBooks = this.state.books.map(book => {
+        if (book._id === updatedBookResult.data._id) {
+          return updatedBookResult;
+        }else {
+          return book;
+        }
+      });
+
+      this.setState({
+        books: updatedBooks,
+        errorMessage: ''
+      });
+    } catch (error) {
+      console.error('Error in BestBooks updateBook:', error);
+      this.setState({
+        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+      })
+    }
+  }
+
+
+  CloseError = () => this.setState({errorMessage: ''});
   closeBookFormModal = () => this.setState({ showForm: false });
+  selectBookToUpdate =(bookToBeUpdated) => this.setState({ bookToBeUpdated, showForm: true });
 
   render() {
     /* DONE: render all the books in a Carousel */
@@ -99,6 +135,8 @@ class BestBooks extends React.Component {
             showForm={this.state.showForm}
             closeBookFormModal={this.closeBookFormModal}
             createBook={this.createBook}
+            bookToBeUpdated = {this.state.bookToBeUpdated}
+            updateBook = {this.updateBook}
           />}
 
         {this.state.books.length ? (
@@ -115,6 +153,7 @@ class BestBooks extends React.Component {
                   <p className="carousel-text">{book.description}</p>
                   <p className="carousel-text">Status: {book.status}</p>
                   <Button onClick={() => this.deleteBook(book)}>Delete</Button>
+                  <Button onClick={() => this.selectBookToUpdate(book)}>Update</Button>
                 </Carousel.Caption>
               </Carousel.Item>
             ))}
