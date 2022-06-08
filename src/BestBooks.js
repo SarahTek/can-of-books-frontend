@@ -60,7 +60,7 @@ class BestBooks extends React.Component {
   deleteBook = async (bookToBeDeleted) => {
     try {
       const proceed = window.confirm(`do you want to delete ${bookToBeDeleted.title}?`);
-      
+
       let newBooks = this.state.books.filter(book => book._id !== bookToBeDeleted._id);
       this.setState({
         books: newBooks,
@@ -85,21 +85,21 @@ class BestBooks extends React.Component {
 
   updateBook = async (updatedBook) => {
     try {
-       const config = {
-          method: 'put',
-          baseURL: process.env.REACT_APP_SERVER,
-          url: `/books/${updatedBook._id}`,
-          data: updatedBook
-        };
+      const config = {
+        method: 'put',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: `/books/${updatedBook._id}`,
+        data: updatedBook
+      };
+      console.log(config);
+      const updatedBookResult = await axios(config);
+      console.log(updatedBookResult.data);
 
-       const updatedBookResult = await axios(config);
-       console.log(updatedBookResult.data);
-      
 
       let updatedBooks = this.state.books.map(book => {
         if (book._id === updatedBookResult.data._id) {
           return updatedBookResult;
-        }else {
+        } else {
           return book;
         }
       });
@@ -117,9 +117,9 @@ class BestBooks extends React.Component {
   }
 
 
-  CloseError = () => this.setState({errorMessage: ''});
+  CloseError = () => this.setState({ errorMessage: '' });
   closeBookFormModal = () => this.setState({ showForm: false });
-  selectBookToUpdate =(bookToBeUpdated) => this.setState({ bookToBeUpdated, showForm: true });
+  selectBookToUpdate = (bookToBeUpdated) => this.setState({ bookToBeUpdated, showForm: true });
 
   render() {
     /* DONE: render all the books in a Carousel */
@@ -135,8 +135,8 @@ class BestBooks extends React.Component {
             showForm={this.state.showForm}
             closeBookFormModal={this.closeBookFormModal}
             createBook={this.createBook}
-            bookToBeUpdated = {this.state.bookToBeUpdated}
-            updateBook = {this.updateBook}
+            bookToBeUpdated={this.state.bookToBeUpdated}
+            updateBook={this.updateBook}
           />}
 
         {this.state.books.length ? (
