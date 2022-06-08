@@ -127,44 +127,42 @@ class BestBooks extends React.Component {
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-<Container>
 
-        <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
+        <Container>
+          <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
+          {this.state.showForm &&
+            <BookFormModal
+              showForm={this.state.showForm}
+              closeBookFormModal={this.closeBookFormModal}
+              createBook={this.createBook}
+              bookToBeUpdated={this.state.bookToBeUpdated}
+              updateBook={this.updateBook}
+            />}
 
-        {/* conditional rendering */}
-        {this.state.showForm &&
-          <BookFormModal
-          showForm={this.state.showForm}
-          closeBookFormModal={this.closeBookFormModal}
-          createBook={this.createBook}
-          bookToBeUpdated={this.state.bookToBeUpdated}
-          updateBook={this.updateBook}
-          />}
-
-        {this.state.books.length ? (
-          <Carousel id="height">
-            {this.state.books.map(book => (
-              <Carousel.Item>
-                <Image
-                id="image"
-                  className="w-100"
-                  src={bookImg}
-                  alt={book.title}
+          {this.state.books.length ? (
+            <Carousel id="height">
+              {this.state.books.map(book => (
+                <Carousel.Item>
+                  <Image
+                    id="image"
+                    className="w-100"
+                    src={bookImg}
+                    alt={book.title}
                   />
-                <Carousel.Caption id="carousel-text">
-                  <h2 className="carousel-text">{book.title}</h2>
-                  <p className="carousel-text">{book.description}</p>
-                  <p className="carousel-text">Status: {book.status}</p>
-                  <Button onClick={() => this.deleteBook(book)}>Delete</Button>
-                  <Button onClick={() => this.selectBookToUpdate(book)}>Update</Button>
-                </Carousel.Caption>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        ) : (
-          <h3>No Books Found :(</h3>
+                  <Carousel.Caption id="carousel-text">
+                    <h2 className="carousel-text">{book.title}</h2>
+                    <p className="carousel-text">{book.description}</p>
+                    <p className="carousel-text">Status: {book.status}</p>
+                    <Button onClick={() => this.deleteBook(book)}>Delete</Button>
+                    <Button onClick={() => this.selectBookToUpdate(book)}>Update</Button>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          ) : (
+            <h3>No Books Found :(</h3>
           )}
-          </Container>
+        </Container>
       </>
     )
   }
