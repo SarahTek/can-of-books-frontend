@@ -4,6 +4,7 @@ import Image from 'react-bootstrap/Image';
 import bookImg from './book.jpeg'
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 import BookFormModal from './BookFormModal';
 
 class BestBooks extends React.Component {
@@ -126,29 +127,31 @@ class BestBooks extends React.Component {
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
+<Container>
 
         <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
 
         {/* conditional rendering */}
         {this.state.showForm &&
           <BookFormModal
-            showForm={this.state.showForm}
-            closeBookFormModal={this.closeBookFormModal}
-            createBook={this.createBook}
-            bookToBeUpdated={this.state.bookToBeUpdated}
-            updateBook={this.updateBook}
+          showForm={this.state.showForm}
+          closeBookFormModal={this.closeBookFormModal}
+          createBook={this.createBook}
+          bookToBeUpdated={this.state.bookToBeUpdated}
+          updateBook={this.updateBook}
           />}
 
         {this.state.books.length ? (
-          <Carousel>
+          <Carousel id="height">
             {this.state.books.map(book => (
               <Carousel.Item>
                 <Image
+                id="image"
                   className="w-100"
                   src={bookImg}
                   alt={book.title}
-                />
-                <Carousel.Caption>
+                  />
+                <Carousel.Caption id="carousel-text">
                   <h2 className="carousel-text">{book.title}</h2>
                   <p className="carousel-text">{book.description}</p>
                   <p className="carousel-text">Status: {book.status}</p>
@@ -160,7 +163,8 @@ class BestBooks extends React.Component {
           </Carousel>
         ) : (
           <h3>No Books Found :(</h3>
-        )}
+          )}
+          </Container>
       </>
     )
   }
