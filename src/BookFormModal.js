@@ -72,7 +72,7 @@ class BookFormModal extends React.Component {
               </Form.Control>
             </Form.Group>
 
-            <Button type="submit">Update a Book</Button>
+            <Button type="submit">Submit Book</Button>
           </Form>
         </Modal.Body>
         <Modal.Footer>
