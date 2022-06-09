@@ -6,6 +6,10 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import BookFormModal from './BookFormModal';
+// import Login from './Login';
+import Logout from './Logout';
+
+import { withAuth0 } from '@auth0/auth0-react';
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -19,22 +23,31 @@ class BestBooks extends React.Component {
 
   /* DONE: Make a GET request to your API to fetch all the books from the database  */
   componentDidMount = async () => {
-    try {
-      const config = {
-        method: 'get',
-        baseURL: process.env.REACT_APP_SERVER,
-        url: '/books'
+   // if (this.props.auth0.isAuthenticated) {
+      try {
+        const res = await this.props.auth0.getIdTokenClaims();
+        const jwt = res.__raw;
+        console.log('token: ', jwt);
+
+        const config = {
+          headers: { "Authorization": `Bearer ${jwt}` }, 
+          method: 'get',
+          baseURL: process.env.REACT_APP_SERVER,
+          url: '/books'
+        }
+        
+        const response = await axios(config);
+        console.log(response.data);
+        this.setState({
+          books: response.data
+        })
+      } catch (error) {
+        console.error(error);
+        this.setState({
+          errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+        })
       }
-      const response = await axios(config);
-      this.setState({
-        books: response.data
-      })
-    } catch (error) {
-      console.error(error);
-      this.setState({
-        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      })
-    }
+    //}
   }
 
   createBook = async (newBook) => {
@@ -128,44 +141,51 @@ class BestBooks extends React.Component {
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
-        <Container>
-          <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
-          {this.state.showForm &&
-            <BookFormModal
-              showForm={this.state.showForm}
-              closeBookFormModal={this.closeBookFormModal}
-              createBook={this.createBook}
-              bookToBeUpdated={this.state.bookToBeUpdated}
-              updateBook={this.updateBook}
-            />}
+        {this.state.showForm &&
+          <BookFormModal
+            showForm={this.state.showForm}
+            closeBookFormModal={this.closeBookFormModal}
+            createBook={this.createBook}
+            bookToBeUpdated={this.state.bookToBeUpdated}
+            updateBook={this.updateBook}
+          />}
 
-          {this.state.books.length ? (
-            <Carousel id="height">
-              {this.state.books.map(book => (
-                <Carousel.Item>
-                  <Image
-                    id="image"
-                    className="w-100"
-                    src={bookImg}
-                    alt={book.title}
-                  />
-                  <Carousel.Caption id="carousel-text">
-                    <h2 className="carousel-text">{book.title}</h2>
-                    <p className="carousel-text">{book.description}</p>
-                    <p className="carousel-text">Status: {book.status}</p>
-                    <Button onClick={() => this.deleteBook(book)}>Delete</Button>
-                    <Button onClick={() => this.selectBookToUpdate(book)}>Update</Button>
-                  </Carousel.Caption>
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          ) : (
-            <h3>No Books Found :(</h3>
-          )}
+        <Container>
+          {/* {this.props.auth0.isAuthenticated ? */}
+            <>
+              <Logout />
+             
+
+              {this.state.books.length > 0 ? (
+                <Carousel id="height">
+                  {this.state.books.map(book => (
+                    <Carousel.Item key={book.title}>
+                      <Image
+                        id="image"
+                        className="w-100"
+                        src={bookImg}
+                        alt={book.title}
+                      />
+                      <Carousel.Caption id="carousel-text">
+                        <h2 className="carousel-text">{book.title}</h2>
+                        <p className="carousel-text">{book.description}</p>
+                        <p className="carousel-text">Status: {book.status}</p>
+                        <Button onClick={() => this.setState({ showForm: true })}>Add a Book</Button>
+                        <Button onClick={() => this.selectBookToUpdate(book)}>Update</Button>
+                        <Button onClick={() => this.deleteBook(book)}>Delete</Button>
+                      </Carousel.Caption>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              ) : (
+                <h3>No Books Found :(</h3>
+              )}
+            </>
+            
         </Container>
       </>
     )
   }
 }
 
-export default BestBooks;
+export default withAuth0(BestBooks);
