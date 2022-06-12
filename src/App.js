@@ -6,43 +6,34 @@ import BestBooks from './BestBooks';
 import About from './About';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from './Login';
  import { withAuth0 } from '@auth0/auth0-react';
  import Profile from './Profile';
-// import Content from './Content';
+ import Welcome from './Welcome';
 
-class App extends React.Component {
+ class App extends React.Component {
   render() {
     return (
       <>
         <Router>
           <Header />
           <Routes>
-
-              <Route
-                exact path="/"
-                
-                element=
-
-                {this.props.auth0.isAuthenticated ?
-                 <>
-                  <Profile />
-                  <BestBooks />
-                 </>
-                  :
-                  <Login />
-                  
-                }
-                >
-              <Route
-                path="/about"
-                element={<About />}
-              >
-              </Route>
-              {/* PLACEHOLDER: add a route with a path of '/about' that renders the `About` component */}
-              </Route>
-            </Routes>
-          {/* </Routes> */}
+            <Route 
+              exact path="/"
+              element={this.props.auth0.isAuthenticated ? <BestBooks /> : <Welcome />}
+            >
+            </Route>
+            {/* PLACEHOLDER: add a route with a path of '/about' that renders the `About` component */}
+            <Route 
+              path="/about"
+              element={<About />}
+            >
+            </Route>
+            <Route 
+              path="/profile"
+              element={<Profile />}
+            >
+            </Route>
+          </Routes>
           <Footer />
         </Router>
       </>
