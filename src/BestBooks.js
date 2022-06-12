@@ -4,11 +4,9 @@ import Image from 'react-bootstrap/Image';
 import bookImg from './book.jpeg'
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
+// import Container from 'react-bootstrap/Container';
 import BookFormModal from './BookFormModal';
-// import Login from './Login';
-import Logout from './Logout';
-
+// import Logout from './Logout';
 import { withAuth0 } from '@auth0/auth0-react';
 
 class BestBooks extends React.Component {
@@ -23,9 +21,9 @@ class BestBooks extends React.Component {
 
   /* DONE: Make a GET request to your API to fetch all the books from the database  */
   componentDidMount = async () => {
-   // if (this.props.auth0.isAuthenticated) {
-      try {
-        const res = await this.props.auth0.getIdTokenClaims();
+    try {
+      if (this.props.auth0.isAuthenticated) {
+      const res = await this.props.auth0.getIdTokenClaims();
         const jwt = res.__raw;
         console.log('token: ', jwt);
 
@@ -34,40 +32,47 @@ class BestBooks extends React.Component {
           method: 'get',
           baseURL: process.env.REACT_APP_SERVER,
           url: '/books'
-        }
+        };
         
         const response = await axios(config);
         console.log(response.data);
         this.setState({
           books: response.data
         })
+      }
       } catch (error) {
         console.error(error);
-        this.setState({
-          errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-        })
+        // this.setState({
+        //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+        // })
       }
     //}
   }
 
   createBook = async (newBook) => {
     try {
+      if (this.props.auth0.isAuthenticated) {
+        const res = await this.props.auth0.getIdTokenClaims();
+        const jwt = res.__raw;
+        console.log('token: ', jwt);
+
       const config = {
+        headers: { "Authorization": `Bearer ${jwt}` }, 
         method: 'post',
         baseURL: process.env.REACT_APP_SERVER,
         url: '/books/',
         data: newBook
       }
       const response = await axios(config);
+      console.log(response.data);
       const newBooksArray = [...this.state.books, response.data]
-      this.setState({
-        books: newBooksArray
-      })
+      this.setState({ books: newBooksArray });
+      }
     } catch (error) {
       console.error(error);
-      this.setState({
-        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      })
+      // this.setState({
+      //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+      // })
     }
   }
 
@@ -75,40 +80,45 @@ class BestBooks extends React.Component {
     try {
       const proceed = window.confirm(`do you want to delete ${bookToBeDeleted.title}?`);
 
-      let newBooks = this.state.books.filter(book => book._id !== bookToBeDeleted._id);
-      this.setState({
-        books: newBooks,
-        errorMessage: ''
-      });
+      if (proceed && this.props.auth0.isAuthenticated) {
+        const res = await this.props.auth0.getIdTokenClaims();
+        const jwt = res.__raw;
+        console.log('token: ', jwt);
 
-      if (proceed) {
         const config = {
+          headers: { "Authorization": `Bearer ${jwt}` },
           method: 'delete',
           baseURL: process.env.REACT_APP_SERVER,
-          url: `/books/${bookToBeDeleted._id}`,
+          url: `/books/${bookToBeDeleted._id}`
         };
-        await axios(config);
+        const response = await axios(config);
+        console.log(response.data);
+
+        const newBooks = this.state.books.filter(book => book._id !== bookToBeDeleted._id);
+      this.setState({ books: newBooks });
       }
-    } catch (error) {
-      console.error('Error in BestBooks deleteBook:', error);
-      this.setState({
-        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      })
+      }catch(error){
+        console.error(error);
     }
   }
 
   updateBook = async (updatedBook) => {
     try {
+      if (this.props.auth0.isAuthenticated) {
+        const res = await this.props.auth0.getIdTokenClaims();
+        const jwt = res.__raw;
+        console.log('token: ', jwt);
+
       const config = {
+        headers: { "Authorization": `Bearer ${jwt}` }, 
         method: 'put',
         baseURL: process.env.REACT_APP_SERVER,
         url: `/books/${updatedBook._id}`,
         data: updatedBook
-      };
-      console.log(config);
-      const updatedBookResult = await axios(config);
-      console.log(updatedBookResult.data);
-
+      };  
+       console.log(config); 
+       const updatedBookResult = await axios(config);
+       console.log(updatedBookResult.data);
 
       let updatedBooks = this.state.books.map(book => {
         if (book._id === updatedBookResult.data._id) {
@@ -119,14 +129,14 @@ class BestBooks extends React.Component {
       });
 
       this.setState({
-        books: updatedBooks,
-        errorMessage: ''
+        books: updatedBooks
       });
+    }
     } catch (error) {
       console.error('Error in BestBooks updateBook:', error);
-      this.setState({
-        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      })
+      // this.setState({
+      //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
+      // })
     }
   }
 
@@ -150,16 +160,10 @@ class BestBooks extends React.Component {
             updateBook={this.updateBook}
           />}
 
-        <Container>
-          {/* {this.props.auth0.isAuthenticated ? */}
-            <>
-              <Logout />
-             
-
-              {this.state.books.length > 0 ? (
+    {this.state.books.length > 0 ? (
                 <Carousel id="height">
                   {this.state.books.map(book => (
-                    <Carousel.Item key={book.title}>
+                    <Carousel.Item key={book._id}>
                       <Image
                         id="image"
                         className="w-100"
@@ -181,9 +185,6 @@ class BestBooks extends React.Component {
                 <h3>No Books Found :(</h3>
               )}
             </>
-            
-        </Container>
-      </>
     )
   }
 }
