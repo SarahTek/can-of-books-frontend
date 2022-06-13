@@ -4,9 +4,7 @@ import Image from 'react-bootstrap/Image';
 import bookImg from './book.jpeg'
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-// import Container from 'react-bootstrap/Container';
 import BookFormModal from './BookFormModal';
-// import Logout from './Logout';
 import { withAuth0 } from '@auth0/auth0-react';
 
 class BestBooks extends React.Component {
@@ -42,11 +40,7 @@ class BestBooks extends React.Component {
       }
       } catch (error) {
         console.error(error);
-        // this.setState({
-        //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-        // })
       }
-    //}
   }
 
   createBook = async (newBook) => {
@@ -70,9 +64,6 @@ class BestBooks extends React.Component {
       }
     } catch (error) {
       console.error(error);
-      // this.setState({
-      //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      // })
     }
   }
 
@@ -134,9 +125,7 @@ class BestBooks extends React.Component {
     }
     } catch (error) {
       console.error('Error in BestBooks updateBook:', error);
-      // this.setState({
-      //   errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      // })
+     
     }
   }
 
